@@ -1,8 +1,8 @@
 state:
-  velocity: [100, 0, 0]                 #m/s
+  velocity: [150, 0, 0]                 #m/s
   angular_velocity: [0, 0, 0]           #degrees/s
   euler_angles: [0, 0, 0]               #degrees (phi, theta, psi)
-  position: [0, 0, -1000]              #m (p_n, p_e, p_d)   
+  position: [0, 0, -2000]              #m (p_n, p_e, p_d)   
 
 trim: True  
 
@@ -11,7 +11,7 @@ control:
   elevator: 0                     #-25 to 10 degrees
   rudder: 0                       #-30 to 30 degrees
   throttle_1: 30                  #0 to 100
-  throttle_2: 30                  #0 to 100
+  throttle_2: 30                #0 to 100
 
 control_limits:
   aileron: [-25, 25]              #degrees

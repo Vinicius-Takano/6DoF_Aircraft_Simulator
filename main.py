@@ -1,74 +1,67 @@
+"""
+Main Aircraft Simulation Script
+"""
+
 import numpy as np
-import yaml
+from core.aircraft import Aircraft
 
-from dynamics.equations import build_state_vector, build_control_vector
-from dynamics.system import full_dynamics
-from control.control_input import apply_control_pulse
-from control.trim import calculate_trim
+# ------------------------------------------------------------------
+# 1. Create and Configure Aircraft
+# ------------------------------------------------------------------
 
-from scipy.integrate import solve_ivp
- 
-# ------------------------------------------------------------------
-# 1. Extract parameters and initial conditions
-# ------------------------------------------------------------------
 cfg_path = 'config/aircraft.yaml'
-with open(cfg_path, 'r') as file:
-    data = yaml.safe_load(file)
+aircraft = Aircraft(cfg_path)
 
-raw_state = build_state_vector(data["state"])
-raw_control = build_control_vector(data["control"])
-params = data
-
-# ------------------------------------------------------------------
-# 2. Trim the Aircraft
-# ------------------------------------------------------------------
-
-if params["trim"]:
-    target_V = np.linalg.norm(raw_state[0:3]) 
-    altitude = -raw_state[11] # -p_d
-    state, base_control = calculate_trim(target_V, altitude, raw_state, raw_control, params)
+print("Aircraft Configuration:")
+print(aircraft)
+print()
 
 # ------------------------------------------------------------------
-# 3. Define Maneuver Parameters
+# 2. Trim the Aircraft (if enabled in config)
 # ------------------------------------------------------------------
-pulse_start = 15
-pulse_duration = 1
-target_channel = 1    
-pulse_magnitude = -5 # degrees
+
+if aircraft.params.get("trim", False):
+    target_V = aircraft.state.total_velocity
+    altitude = aircraft.state.altitude
+    aircraft.trim(target_V, altitude)
+else:
+    print("Trim disabled in configuration, skipping.")
+
+print()
 
 # ------------------------------------------------------------------
-# 4. Simulate dynamics
+# 3. Simulate Dynamics with Control Pulse
 # ------------------------------------------------------------------
-def ode(t, current_state):                                                  
-    current_control = apply_control_pulse(
-        t, base_control, pulse_start, pulse_duration, target_channel, pulse_magnitude
-    )
-    return full_dynamics(t, current_state, current_control, params)
 
-t_span = (0, 60)
-t_eval = np.arange(0, 60, 0.01) 
+# Define maneuver parameters
+maneuver_params = {
+    'pulse_start': 10,  # seconds
+    'pulse_duration': 1,  # seconds
+    'target_channel': 1, # 0=aileron, 1=elevator, 2=rudder, 3/4=throttle
+    'pulse_magnitude': -5,  # degrees for surfaces, % for throttle
+    't_start': 0.0,
+    't_end': 100,
+    'dt': 0.05
+}
 
-sol = solve_ivp(
-    ode,
-    t_span,
-    state, # Now using the trimmed state
-    t_eval=t_eval,
-    method="RK45"
+# Run simulation
+time, state_history = aircraft.simulate(
+    t_start=maneuver_params['t_start'],
+    t_end=maneuver_params['t_end'],
+    dt=maneuver_params['dt'],
+    pulse_start=maneuver_params['pulse_start'],
+    pulse_duration=maneuver_params['pulse_duration'],
+    target_channel=maneuver_params['target_channel'],
+    pulse_magnitude=maneuver_params['pulse_magnitude']
 )
 
+print()
+
 # ------------------------------------------------------------------
-# 5. Plot results
+# 4. Plot Results
 # ------------------------------------------------------------------
-control_history = np.array([
-    apply_control_pulse(t, base_control, pulse_start, pulse_duration, target_channel, pulse_magnitude) 
-    for t in sol.t
-])
 
-from visualization.plot_states import plot_states, plot_3d_flight_path
-from visualization.plot_debug import plot_debug
+aircraft.plot_results()
 
-plot_states(sol.t, sol.y.T, control_history)
-#plot_3d_flight_path(sol.y.T)                     
-#plot_debug(sol.t, sol.y.T, control_history, params) 
-
-
+print()
+print("Simulation complete!")
