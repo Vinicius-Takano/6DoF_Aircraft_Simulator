@@ -5,14 +5,14 @@ import models.propulsion as prop
 
 # Utility functions 
 def build_state_vector(state):
-    u, v, w = state["velocity"]
+    u_b, v_b, w_b = state["velocity"]
 
     p, q, r = np.deg2rad(state["angular_velocity"])
     phi, theta, psi = np.deg2rad(state["euler_angles"])
 
     p_n, p_e, p_d = state["position"]
 
-    return np.array([u, v, w, p, q, r, phi, theta, psi, p_n, p_e, p_d])
+    return np.array([u_b, v_b, w_b, p, q, r, phi, theta, psi, p_n, p_e, p_d])
 
 def build_control_vector(control):
     aileron = control["aileron"] * np.pi / 180
@@ -20,8 +20,11 @@ def build_control_vector(control):
     rudder = control["rudder"] * np.pi / 180
     throttle_1 = control["throttle_1"] / 100
     throttle_2 = control["throttle_2"] / 100
+    wind_N = control["wind_N"]
+    wind_E = control["wind_E"]
+    wind_D = control["wind_D"]
 
-    return np.array([aileron, elevator, rudder, throttle_1, throttle_2])        # convert to radians for control inputs
+    return np.array([aileron, elevator, rudder, throttle_1, throttle_2, wind_N, wind_E, wind_D])        # convert to radians for control inputs
 
 def build_inertia_matrix(inertia):
     Ixx = inertia["Ixx"]

@@ -7,13 +7,13 @@ def aero_force_coef_Fb(state, control, params):
     _, q, _ = state[3:6]
     
     # unpack control
-    aileron, elevator, rudder, _, _ = control
+    aileron, elevator, rudder, _, _, _, _, _= control
     
     c = params["geometry"]["c"]
     
     # compute aerodynamic coefficients (placeholder)
-    alpha, beta = kin.alpha_beta(state)
-    V_a = kin.total_velocity(state)
+    alpha, beta = kin.alpha_beta(state, control)
+    V_a = kin.total_velocity(state, control)
     
     CL_0, CL_alpha, CL_q, CL_delta_e = params["aerodynamics"]["CL_0"], params["aerodynamics"]["CL_alpha"], params["aerodynamics"]["CL_q"], params["aerodynamics"]["CL_delta_e"]
     CD_0, k = params["aerodynamics"]["CD0"], params["aerodynamics"]["k"]
@@ -33,15 +33,15 @@ def aero_moment_coef_Mb(state, control, params):
     p, q, r = state[3:6]
     
     # unpack control
-    aileron, elevator, rudder, _, _ = control
+    aileron, elevator, rudder, _, _, _, _, _= control
     
     # unpack params
     c = params["geometry"]["c"]
     b = params["geometry"]["b"]
     
     # compute aerodynamic coefficients
-    V_a = kin.total_velocity(state)
-    alpha, beta = kin.alpha_beta(state)
+    V_a = kin.total_velocity(state, control)
+    alpha, beta = kin.alpha_beta(state, control)
     
     Cm_0, Cm_alpha, Cm_q, Cm_delta_e = params["aerodynamics"]["Cm_0"], params["aerodynamics"]["Cm_alpha"], params["aerodynamics"]["Cm_q"], params["aerodynamics"]["Cm_delta_e"]
     Cn_beta, Cn_delta_r, Cn_delta_a, Cn_e, Cn_r = params["aerodynamics"]["Cn_beta"], params["aerodynamics"]["Cn_delta_r"], params["aerodynamics"]["Cn_delta_a"], params["aerodynamics"]["Cn_e"], params["aerodynamics"]["Cn_r"]
@@ -55,7 +55,7 @@ def aero_moment_coef_Mb(state, control, params):
 
 def aero_force_Fb(state, control, params):
     C_Fb = aero_force_coef_Fb(state, control, params)
-    Q = kin.dynamic_pressure(state, params)
+    Q = kin.dynamic_pressure(state, control)
     S_w = params["geometry"]["S_w"]
     
     F_b = C_Fb*Q*S_w
@@ -64,7 +64,7 @@ def aero_force_Fb(state, control, params):
 
 def aero_moment_Mb(state, control, params):
     C_Mb = aero_moment_coef_Mb(state, control, params)
-    Q = kin.dynamic_pressure(state, params)
+    Q = kin.dynamic_pressure(state, control)
     S_w = params["geometry"]["S_w"]
     c = params["geometry"]["c"]
     b = params["geometry"]["b"]

@@ -3,19 +3,25 @@ import numpy as np
 import dynamics.equations as eq
 import models.atmosphere as atm
 
-def alpha_beta(state):
-    u, v, w = state[0:3]
-    alpha = np.arctan2(w, u)
-    beta = np.arcsin(v / np.sqrt(u**2 + v**2 + w**2)) if np.sqrt(u**2 + v**2 + w**2) != 0 else 0
+def alpha_beta(state, control):
+    v_body = state[0:3]
+    v_wind = control[5:8]
+    v_rel = v_body - np.linalg.inv(euler_to_DCM(state[6], state[7], state[8])) @ v_wind
+
+    alpha = np.arctan2(v_rel[2], v_rel[0])
+    beta = np.arcsin(v_rel[1] / np.sqrt(v_rel[0]**2 + v_rel[1]**2 + v_rel[2]**2))
     return alpha, beta
 
-def total_velocity(state):
-    u, v, w = state[0:3]
-    V_a = np.sqrt(u**2 + v**2 + w**2)
+def total_velocity(state, control):
+    v_body = state[0:3]
+    v_wind = control[5:8]
+    v_rel = v_body - euler_to_DCM(state[6], state[7], state[8]) @ v_wind
+    
+    V_a = np.sqrt(v_rel[0]**2 + v_rel[1]**2 + v_rel[2]**2)
     return V_a
 
-def dynamic_pressure(state, params):
-    V_a = total_velocity(state)
+def dynamic_pressure(state, control):
+    V_a = total_velocity(state, control)
     rho, _ = atm.compute_atmospheric_properties(state)
     q_inf = 0.5 * rho * V_a**2
     return q_inf

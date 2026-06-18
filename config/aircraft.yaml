@@ -1,8 +1,8 @@
 state:
-  velocity: [100, 0, 0]                 #m/s
+  velocity: [150, 0, 0]                 #m/s
   angular_velocity: [0, 0, 0]           #degrees/s
   euler_angles: [0, 0, 0]               #degrees (phi, theta, psi)
-  position: [0, 0, -1000]              #m (p_n, p_e, p_d)   
+  position: [0, 0, -5000]              #m (p_n, p_e, p_d)   
 
 trim: True  
 
@@ -10,8 +10,11 @@ control:
   aileron: 0                      #-25 to 25 degrees
   elevator: 0                     #-25 to 10 degrees
   rudder: 0                       #-30 to 30 degrees
-  throttle_1: 30                  #0 to 100
-  throttle_2: 30                  #0 to 100
+  throttle_1: 50                  #0 to 100
+  throttle_2: 50                  #0 to 100
+  wind_N: 0                      #m/s
+  wind_E: 0                      #m/s
+  wind_D: 0                      #m/s
 
 control_limits:
   aileron: [-25, 25]              #degrees
@@ -43,8 +46,8 @@ geometry:
   engine_i: 1                     #degrees
   lht: 25                         #m
 
-  r_cg: [0.30, 0, 0]              # chord percentage
-  r_ac: [0.25, 0, 0]              # chord percentage
+  r_cg: [0.20, 0, 0]              # chord percentage
+  r_ac: [0.30, 0, 0]              # chord percentage
 
 propulsion:
   T_max: 120000                   #N
@@ -54,7 +57,7 @@ atmosphere:
   g: 9.81                         #m/s^2
 
 aerodynamics:
-  CL_0: 0.5                      
+  CL_0: 0                      
   CL_alpha: 4.982                 #rad^-1
   CL_delta_e: 0.435               #rad^-1
   CL_q: -0.7                    
