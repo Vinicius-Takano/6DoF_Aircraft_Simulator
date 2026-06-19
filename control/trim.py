@@ -10,7 +10,9 @@ def calculate_trim(target_Va, altitude, base_state, base_control, params):
     Finds the straight and level trim condition accounting for wind.
     Target velocity is now Airspeed (Va).
     """
-    print(f"--- Starting Trim Routine for Va = {target_Va} m/s ---")
+    print("="*50)
+    print(f"Starting Trim Routine for Va = {target_Va} m/s")
+    print("="*50)
 
     def cost_function(trim_vars):
         alpha, elevator, throttle = trim_vars
@@ -92,7 +94,7 @@ def calculate_trim(target_Va, altitude, base_state, base_control, params):
         print(f" Alpha:    {np.degrees(alpha_trim):.2f} deg")
         print(f" Elevator:   {np.degrees(elev_trim):.2f} deg")
         print(f" Throttle:   {throt_trim * 100:.1f} %")
-        print("---------------------------------------------------")
+        print("="*50)
         return trim_state, trim_control
     else:
         print("Trim Failed!")
@@ -102,7 +104,9 @@ def calculate_turn_trim(target_Va, turn_rate, base_state, base_control, params):
     """
     Finds trim conditions for a steady, coordinated turn at a specific turn rate (rad/s).
     """
-    print(f"--- Trim Routine for Va = {target_Va} m/s | Turn Rate = {np.degrees(turn_rate):.2f} deg/s ---")
+    print("="*50)
+    print(f"Trim Routine for Va = {target_Va} m/s | Turn Rate = {np.degrees(turn_rate):.2f} deg/s")
+    print("="*50)
 
     def cost_function(trim_vars):
         alpha, phi, aileron, elevator, rudder, throttle = trim_vars
@@ -181,7 +185,7 @@ def calculate_turn_trim(target_Va, turn_rate, base_state, base_control, params):
         print(f" Alpha:    {np.degrees(alpha_t):.2f} deg | Bank (Phi): {np.degrees(phi_t):.2f} deg")
         print(f" Aileron:  {np.degrees(ail_t):.2f} deg   | Elevator:   {np.degrees(elev_t):.2f} deg")
         print(f" Rudder:   {np.degrees(rud_t):.2f} deg   | Throttle:   {throt_t * 100:.1f} %")
-        print("---------------------------------------------------")
+        print("="*50)
         
         # Build the final trimmed state and control arrays
         trim_state = np.copy(base_state)
@@ -228,7 +232,9 @@ def calculate_sideslip_trim(target_Va, target_beta, base_state, base_control, pa
     Finds trim conditions for a straight steady flight with a constant sideslip angle (beta).
     Tracks due North with zero altitude loss.
     """
-    print(f"--- Trim Routine for Va = {target_Va:.1f} m/s | Beta = {np.degrees(target_beta):.2f} deg ---")
+    print("="*50)
+    print(f"Trim Routine for Va = {target_Va:.1f} m/s | Beta = {np.degrees(target_beta):.2f} deg")
+    print("="*50)
 
     def cost_function(trim_vars):
         alpha, phi, theta, psi, aileron, elevator, rudder, throttle = trim_vars
@@ -325,7 +331,7 @@ def calculate_sideslip_trim(target_Va, target_beta, base_state, base_control, pa
         print(f" Pitch:    {np.degrees(theta_t):.2f} deg | Heading:    {np.degrees(psi_t):.2f} deg")
         print(f" Aileron:  {np.degrees(ail_t):.2f} deg   | Elevator:   {np.degrees(elev_t):.2f} deg")
         print(f" Rudder:   {np.degrees(rud_t):.2f} deg   | Throttle:   {throt_t * 100:.1f} %")
-        print("---------------------------------------------------")
+        print("="*50)
         
         # Build the final trimmed state and control arrays
         trim_state = np.copy(base_state)

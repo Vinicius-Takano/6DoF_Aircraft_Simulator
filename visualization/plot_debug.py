@@ -118,29 +118,46 @@ def extract_simulation_data(time, state_history, control_history, params):
 
 def plot_report(time, state_history, control_history, params, var1, var2, var3, var4):
     """
-    Plots a custom 2x2 grid of any simulation variables.
-    Example variables: 'V_a', 'Alpha', 'Theta', 'Altitude', 'p', 'q', 'r', 'Beta'
+    Plots a custom 2x2 grid of simulation variables, formatted for formal reports.
     """
     data = extract_simulation_data(time, state_history, control_history, params)
     
-    fig, axs = plt.subplots(2, 2, figsize=(12, 8))
-    fig.suptitle(f"Custom Flight Report: {var1}, {var2}, {var3}, {var4}", fontsize=14)
+    # figsize=(10, 8) or (12, 9) ensures the 2x2 grid yields clean, uniform aspect ratios
+    fig, axs = plt.subplots(2, 2, figsize=(10, 8))
     
     variables = [var1, var2, var3, var4]
     axs = axs.flatten()
     
     for i, var in enumerate(variables):
         if var in data:
-            axs[i].plot(time, data[var], linewidth=2, color='darkblue')
-            axs[i].set_title(var, fontweight='bold')
-            axs[i].set_xlabel("Time (s)")
-            axs[i].grid(True)
-            stabilize_axis(axs[i], min_range=0.1) # Prevents microscopic noise scaling
+            # 1. 2pt thickness and a professional "simulation blue"
+            axs[i].plot(time, data[var], linewidth=1.5, color="#0990FF") 
+            
+            # 2. Subplot titles only
+            axs[i].set_title(var, fontsize=12, fontweight='bold')
+            axs[i].set_xlabel("Time (s)", fontsize=10)
+            
+            # 3. Disable scientific notation and offsets (e.g., stops 1e2 + 5.03)
+            axs[i].ticklabel_format(useOffset=False, style='plain', axis='both')
+            
+            # 4. Standard engineering grids (Major and Minor)
+            axs[i].minorticks_on()
+            axs[i].grid(which='major', color='#CCCCCC', linewidth=0.8, linestyle='-')
+            axs[i].grid(which='minor', color='#E5E5E5', linewidth=0.5, linestyle=':')
+            
+            # Set a clean spine (border) thickness
+            for spine in axs[i].spines.values():
+                spine.set_linewidth(1.2)
+            
+            # Keep your stabilization logic
+            stabilize_axis(axs[i], min_range=0.1) 
+            
         else:
             axs[i].set_title(f"{var} (NOT FOUND)", color='red')
             print(f"Warning: '{var}' is not a valid variable key.")
             
-    plt.tight_layout()
+    # Pad adds a little breathing room between the graphs for the axis labels
+    plt.tight_layout(pad=2.0)
     plt.show()
 
 

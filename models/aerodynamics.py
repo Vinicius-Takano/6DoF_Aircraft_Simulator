@@ -8,7 +8,6 @@ def aero_force_coef_Fb(state, control, params):
     
     # unpack control
     aileron, elevator, rudder, _, _, _, _, _= control
-    
     c = params["geometry"]["c"]
     
     # compute aerodynamic coefficients (placeholder)
@@ -44,12 +43,12 @@ def aero_moment_coef_Mb(state, control, params):
     alpha, beta = kin.alpha_beta(state, control)
     
     Cm_0, Cm_alpha, Cm_q, Cm_delta_e = params["aerodynamics"]["Cm_0"], params["aerodynamics"]["Cm_alpha"], params["aerodynamics"]["Cm_q"], params["aerodynamics"]["Cm_delta_e"]
-    Cn_beta, Cn_delta_r, Cn_delta_a, Cn_e, Cn_r = params["aerodynamics"]["Cn_beta"], params["aerodynamics"]["Cn_delta_r"], params["aerodynamics"]["Cn_delta_a"], params["aerodynamics"]["Cn_e"], params["aerodynamics"]["Cn_r"]
-    Cr_beta, Cr_delta_r, Cr_delta_a, Cr_e, Cr_r = params["aerodynamics"]["Cr_beta"], params["aerodynamics"]["Cr_delta_r"], params["aerodynamics"]["Cr_delta_a"], params["aerodynamics"]["Cr_e"], params["aerodynamics"]["Cr_r"]
+    Cn_beta, Cn_delta_r, Cn_delta_a, Cn_p, Cn_r = params["aerodynamics"]["Cn_beta"], params["aerodynamics"]["Cn_delta_r"], params["aerodynamics"]["Cn_delta_a"], params["aerodynamics"]["Cn_p"], params["aerodynamics"]["Cn_r"]
+    Cr_beta, Cr_delta_r, Cr_delta_a, Cr_p, Cr_r = params["aerodynamics"]["Cr_beta"], params["aerodynamics"]["Cr_delta_r"], params["aerodynamics"]["Cr_delta_a"], params["aerodynamics"]["Cr_p"], params["aerodynamics"]["Cr_r"]
     
     Cm = Cm_0 + Cm_alpha*alpha + Cm_delta_e*elevator + Cm_q*q*c/(2*V_a)
-    Cn = Cn_beta*beta + Cn_delta_r*rudder + Cn_delta_a*aileron + Cn_r*r*b/(2*V_a) + Cn_e*p*b/(2*V_a)
-    Cr = Cr_beta*beta + Cr_delta_r*rudder + Cr_delta_a*aileron + Cr_r*r*b/(2*V_a) + Cr_e*p*b/(2*V_a)
+    Cn = Cn_beta*beta + Cn_delta_r*rudder + Cn_delta_a*aileron + Cn_r*r*b/(2*V_a) + Cn_p*p*b/(2*V_a)
+    Cr = Cr_beta*beta + Cr_delta_r*rudder + Cr_delta_a*aileron + Cr_r*r*b/(2*V_a) + Cr_p*p*b/(2*V_a)
     
     return np.array([Cr, Cm, Cn])
 
