@@ -284,7 +284,7 @@ def calculate_sideslip_trim(target_Va, target_beta, base_state, base_control, pa
         dp, dq, dr = state_dot[3:6]
 
         # Heavy weights on rotational accelerations
-        cost = (du**2 + dv**2 + dw**2) + 100 * (dp**2 + dq**2 + dr**2)
+        cost = (du**2 + dv**2 + dw**2) + 500*(dp**2 + dq**2 + dr**2)
         
         # Heavy weights on lateral and vertical drift
         cost += (v_E**2 * 100)  # Forces the aircraft to track strictly North

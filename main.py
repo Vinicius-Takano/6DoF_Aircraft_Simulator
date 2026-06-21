@@ -25,37 +25,37 @@ params = data
 # 2. SIMULATION CONFIGURATION
 # ==================================================================
 # --- A. Trim Settings ---
-TRIM_MODE = "turn"  # Options: "straight", "turn", "sideslip", "none"
+TRIM_MODE = "straight"  # Options: "straight", "turn", "sideslip", "none"
 
 TARGET_V = np.linalg.norm(raw_state[0:3]) 
 TARGET_ALTITUDE = -raw_state[11]          
-TARGET_TURN_RATE = np.radians(1)          
+TARGET_TURN_RATE = np.radians(0)          
 TARGET_BETA = np.radians(0)               
 
 # --- B. Maneuver Input Settings
 INPUT_TYPE = "none"  # Options: "step", "doublet", "wind_pulse", "none"
-MANEUVER_START = 5 
-MANEUVER_DURATION = 10  
-CHANNEL = 0              
-MAGNITUDE = 5         
-WIND_VECTOR = [0.0, 0.0, 0.0]  
+MANEUVER_START = 0 
+MANEUVER_DURATION = 2  
+CHANNEL = [5, 6, 7]              
+MAGNITUDE = [0, -6.978, 0]      
+WIND_VECTOR = [0, 0, 0]  
 
 # --- C. State Perturbation Settings (For Stability Analysis) ---
-PERTURB_STATE = False
+PERTURB_STATE = True
 
 # 2d) Pure Roll: Delta p = 2 deg/s
-DELTA_P_DEG = 0.0    # Roll Rate (p)
+DELTA_P_DEG = 20    # Roll Rate (p)
 
 # 2e) Spiral: Delta phi = 10 deg
 DELTA_PHI_DEG = 0.0 # Bank Angle (phi) - Set to 10.0 for simulation 2e
 
 # --- D. Time Settings ---
-SIM_TIME = 400 
+SIM_TIME = 5 
 t_span = (0, SIM_TIME)
-t_eval = np.arange(0, SIM_TIME, 0.1)
+t_eval = np.arange(0, SIM_TIME, 0.005)
 
 # --- E. Plotting Settings ---
-REPORT_VARIABLES = ['Aileron', 'Phi', 'p', 'V_a'] # Good variables for lateral modes
+REPORT_VARIABLES = ['V_a', 'Alpha', 'Beta', 'Altitude'] # Good variables for lateral modes
 
 # ------------------------------------------------------------------
 # 3. Trim the Aircraft

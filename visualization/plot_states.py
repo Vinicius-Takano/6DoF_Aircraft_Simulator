@@ -107,7 +107,7 @@ def plot_states(time, state_history, control_history):
         stabilize_axis(ax, min_range=2.0)
         
     fig2.tight_layout(pad=2.0)
-    
+    plt.show()
     
 def plot_3d_flight_path(state_history):
     """

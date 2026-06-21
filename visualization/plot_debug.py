@@ -131,7 +131,7 @@ def plot_report(time, state_history, control_history, params, var1, var2, var3, 
     for i, var in enumerate(variables):
         if var in data:
             # 1. 2pt thickness and a professional "simulation blue"
-            axs[i].plot(time, data[var], linewidth=1.5, color="#0990FF") 
+            axs[i].plot(time, data[var], linewidth=1.5, color="#000000") 
             
             # 2. Subplot titles only
             axs[i].set_title(var, fontsize=12, fontweight='bold')

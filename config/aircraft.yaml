@@ -80,8 +80,8 @@ aerodynamics:
   Cr_delta_a: -0.33
   Cr_delta_r: 0.25
 
-  Cn_beta: 1.75
+  Cn_beta: 1.76 #1.76
   Cn_p: -1.5
-  Cn_r: -7.5
+  Cn_r: -1.5 #7.5
   Cn_delta_a: -0.125
   Cn_delta_r: -1
