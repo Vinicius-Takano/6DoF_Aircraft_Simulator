@@ -8,7 +8,7 @@ from control.control_input import apply_control_doublet, apply_control_step, app
 from control.trim import calculate_trim, calculate_turn_trim, calculate_sideslip_trim
 from scipy.integrate import solve_ivp
 from visualization.plot_states import plot_states, plot_3d_flight_path
-from visualization.plot_debug import plot_debug, plot_report
+from visualization.plot_debug import plot_report
  
 # ------------------------------------------------------------------
 # 1. Extract parameters and initial conditions
@@ -33,29 +33,29 @@ TARGET_TURN_RATE = np.radians(0)
 TARGET_BETA = np.radians(0)               
 
 # --- B. Maneuver Input Settings
-INPUT_TYPE = "none"  # Options: "step", "doublet", "wind_pulse", "none"
-MANEUVER_START = 0 
+INPUT_TYPE = "doublet"  # Options: "step", "doublet", "wind_pulse", "none"
+MANEUVER_START = 2 
 MANEUVER_DURATION = 2  
-CHANNEL = [5, 6, 7]              
-MAGNITUDE = [0, -6.978, 0]      
+CHANNEL = 1          
+MAGNITUDE = 1     
 WIND_VECTOR = [0, 0, 0]  
 
 # --- C. State Perturbation Settings (For Stability Analysis) ---
-PERTURB_STATE = True
+PERTURB_STATE = False
 
-# 2d) Pure Roll: Delta p = 2 deg/s
-DELTA_P_DEG = 20    # Roll Rate (p)
+# 2d) Pure Roll: Delta p
+DELTA_P_DEG = 0.0    # Roll Rate (p)
 
-# 2e) Spiral: Delta phi = 10 deg
-DELTA_PHI_DEG = 0.0 # Bank Angle (phi) - Set to 10.0 for simulation 2e
+# 2e) Spiral: Delta phi 
+DELTA_PHI_DEG = 0 # Bank Angle (phi)
 
 # --- D. Time Settings ---
-SIM_TIME = 5 
+SIM_TIME = 20 
 t_span = (0, SIM_TIME)
-t_eval = np.arange(0, SIM_TIME, 0.005)
+t_eval = np.arange(0, SIM_TIME, 0.01)
 
 # --- E. Plotting Settings ---
-REPORT_VARIABLES = ['V_a', 'Alpha', 'Beta', 'Altitude'] # Good variables for lateral modes
+REPORT_VARIABLES = ['Elevator', 'Alpha', 'q', 'V_a'] 
 
 # ------------------------------------------------------------------
 # 3. Trim the Aircraft
@@ -75,11 +75,9 @@ else:
 # 3.5 Apply Initial State Perturbations
 # ==================================================================
 if PERTURB_STATE:
-    # Add Delta p (convert to radians)
     if DELTA_P_DEG != 0.0:
         state[3] += np.radians(DELTA_P_DEG)
-        
-    # Add Delta phi (convert to radians)
+    
     if DELTA_PHI_DEG != 0.0:
         state[6] += np.radians(DELTA_PHI_DEG)
 
@@ -97,7 +95,6 @@ if PERTURB_STATE and (DELTA_P_DEG != 0.0 or DELTA_PHI_DEG != 0.0):
     if DELTA_PHI_DEG != 0.0: print(f"   -> Delta phi = {DELTA_PHI_DEG} deg")
 else:
     print(f" Input Type: {INPUT_TYPE.upper()} starting at t={MANEUVER_START}s")
-    # ... [Keep your existing input prints here] ...
 
 print(f" Sim Time  : {SIM_TIME} seconds")
 print("="*50 + "\n")
@@ -158,6 +155,4 @@ control_history = np.array(control_history)
 # Standard generic state plots
 plot_states(sol.t, sol.y.T, control_history)
 #plot_3d_flight_path(sol.y.T)
-
-# Custom report using the variables defined at the top
 plot_report(sol.t, sol.y.T, control_history, params, REPORT_VARIABLES[0], REPORT_VARIABLES[1], REPORT_VARIABLES[2], REPORT_VARIABLES[3])
